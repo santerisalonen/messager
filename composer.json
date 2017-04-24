@@ -1,0 +1,17 @@
+{
+    "name": "phoesis/supplier",
+    "authors": [
+        {
+            "name": "Santeri",
+            "email": "santeri.salonen@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "Messager\\" : "src/"
+      } 
+    },
+    "require": {
+        "aws/aws-sdk-php": "^3.25"
+    }
+}
