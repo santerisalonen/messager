@@ -3,13 +3,10 @@
 namespace Messager;
 
 class Queue {
-  private static $sqs;
-  private static $queueUrl;
-  public static function fetchMsg($count = 10) { 
   
-    if( !self::$sqs ) { self::init(); }
-    $result = self::$sqs->receiveMessage(array(
-        'QueueUrl' => self::$queueUrl,
+  public static function fetchMsg($count = 10) { 
+    $result = Client::getSqs()->receiveMessage(array(
+        'QueueUrl' => Client::getQueueUrl(),
         'MaxNumberOfMessages' => $count
     ));
     $events = array();
@@ -22,11 +19,8 @@ class Queue {
     return $events;
   }
   public static function deleteMsg($handle) { 
-    
-    if( !self::$sqs ) { self::init(); }
-    
-    $result = self::$sqs->deleteMessage(array(
-        'QueueUrl' => self::$queueUrl,
+    $result = Client::getSqs()->deleteMessage(array(
+        'QueueUrl' => Client::getQueueUrl(),
         'ReceiptHandle' => $handle
     ));
     return $result;
@@ -46,17 +40,5 @@ class Queue {
     );
     
   }
-  private static function init() {
-    $conf = json_decode( file_get_contents(BASE_DIR . '/messager.json'), true);
-    if(!$conf ) {
-      throw new \Exception('No configuration found');
-    } 
-    self::$queueUrl = 'https://sqs.' . $conf['sqs']['region'] . '.amazonaws.com/' . $conf['aws']['account_id'] .'/'. $conf['sqs']['queue'];
-    
-    $params = $conf['sqs'];
-    if( \Config::$is_localhost ) {
-      $params['profile'] = $conf['aws']['local_profile'];
-    }
-    self::$sqs = new \Aws\Sqs\SqsClient($params);
-  }
+ 
 }

@@ -1,0 +1,15 @@
+{
+  "aws" : {
+    "local_profile" : "",
+    "account_id" : ""
+  },
+  "sns" : {
+    "version" : "",
+    "region" : ""
+  },
+  "sqs" : {
+    "version" : "",
+    "region" : "",
+    "queue" : ""
+  }
+}

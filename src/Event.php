@@ -2,40 +2,21 @@
 namespace Messager;
 
 class Event {
-  private static $sns;
-  private static $topicArnBase;
   
   public function __construct($topic, $data) {
     $this->topic = $topic;
     $this->data = filter_var_array($data, $this->getFilter($this->topic));
   }
   
-  public function publish() {
-    if( !self::$sns ) {
-      self::init();
-    }    
-    $result = self::$sns->publish(array(
-      'TopicArn' => self::$topicArnBase . $this->topic,
+  public static function publish($topic, $data) {
+    $event = new Event($topic, $data);
+
+    $result = Client::getSns()->publish(array(
+      'TopicArn' => Client::getTopicArn($event->topic),
       // Message is required
-      'Message' => json_encode( $this->data )
+      'Message' => json_encode( $event->data )
     ));
   }  
-
-  private static function init() {
-    $conf = json_decode( file_get_contents(BASE_DIR . '/messager.json'), true);
-    
-    if(!$conf ) {
-      throw new \Exception('No configuration found');
-    }
-    self::$topicArnBase = 'arn:aws:sns:'. $conf['sns']['region'].':'. $conf['aws']['account_id'].':';
-    
-    $params = $conf['sns'];
-    if( \Config::$is_localhost ) {
-      $params['profile'] = $conf['aws']['local_profile'];
-    }
-    self::$sns = new \Aws\Sns\SnsClient($params);
-    
-  }
 
   
   public function getFilter($topic) {
