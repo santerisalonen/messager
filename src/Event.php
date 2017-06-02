@@ -25,8 +25,8 @@ class Event {
         return array(
           'supplier' => FILTER_SANITIZE_STRING,
           'id' => FILTER_SANITIZE_STRING,
-          'qty' => FILTER_SANITIZE_NUMBER_INT,
-          'price' => FILTER_SANITIZE_NUMBER_FLOAT,
+          'qty' => FILTER_VALIDATE_INT,
+          'price' => FILTER_VALIDATE_FLOAT,
           'name' => FILTER_SANITIZE_STRING,
           'ean' => FILTER_SANITIZE_STRING,
           'brand' => FILTER_SANITIZE_STRING,
